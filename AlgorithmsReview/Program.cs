@@ -4,7 +4,54 @@ using System.Collections.Generic;
 namespace AlgorithmsReview {
     class Program {
         static void Main(string[] args) {
-            Console.WriteLine("Hello World!");
+
+            var bst = new BinarySearchTree();
+            bst.PrintBst();
+
+            bst.InsertNode(10);
+            bst.InsertNode(50);
+            bst.InsertNode(5);
+            bst.InsertNode(55);
+            bst.InsertNode(45);
+
+            bst.PrintBst();
+
+            bst.DeleteNode(0);
+            bst.PrintBst();
+
+            bst.DeleteNode(50);
+            bst.PrintBst();
+
+            bst.DeleteNode(10);
+            bst.PrintBst();
+
+            bst.InsertNode(10);
+            bst.InsertNode(-1);
+            bst.PrintBst();
+
+
+            var graph = new Graph<int>();
+            for (int i = 1; i < 11; i++) {
+                graph.AddVertex(i);
+            }
+            graph.AddEdge(1, 2);
+            graph.AddEdge(1, 3);
+            graph.AddEdge(2, 4);
+            graph.AddEdge(3, 5);
+            graph.AddEdge(3, 6);
+            graph.AddEdge(4, 7);
+            graph.AddEdge(5, 7);
+            graph.AddEdge(5, 8);
+            graph.AddEdge(5, 6);
+            graph.AddEdge(8, 9);
+            graph.AddEdge(9, 10);
+
+            Console.WriteLine(string.Join(", ", BreadthFirstSearch(graph, 1)));
+            Console.WriteLine(string.Join(", ", DepthFirstSearchUsingStack(graph, 1)));
+
+            DepthFirstSearchUsingRecursion(graph, 1);
+            Console.WriteLine(string.Join(", ", _visited));
+
         }
 
         //O(n)
@@ -192,6 +239,7 @@ namespace AlgorithmsReview {
         }
 
         //O(V+E)
+        //O(V) Space Complexity
         private static LinkedList<T> BreadthFirstSearch<T>(Graph<T> graph,T start) {
 
             LinkedList<T> visited = new LinkedList<T>();
@@ -226,7 +274,8 @@ namespace AlgorithmsReview {
         }
 
         //O(V+E)
-        private static LinkedList<T> DepthFirstSearch<T>(Graph<T> graph, T start) {
+        //O(V) Space Complexity
+        private static LinkedList<T> DepthFirstSearchUsingStack<T>(Graph<T> graph, T start) {
 
             LinkedList<T> visited = new LinkedList<T>();
 
@@ -258,6 +307,27 @@ namespace AlgorithmsReview {
             return visited;
 
         }
+
+        private static LinkedList<object> _visited = new LinkedList<object>();
+        public static void DepthFirstSearchUsingRecursion<T>(Graph<T> graph, T start) {
+
+            if (!graph.Adjecency.ContainsKey(start)) {
+                return;
+            }
+
+            if (_visited.Contains(start)) {
+                return;
+            }
+
+            _visited.AddLast(start);
+
+            foreach (T edge in graph.Adjecency[start]) {
+                if (_visited.Contains(edge)) {
+                    continue;
+                }
+                DepthFirstSearchUsingRecursion(graph, edge);
+            }
+        }
     }
     class Node {
         public int Key { get; set; }
@@ -272,6 +342,29 @@ namespace AlgorithmsReview {
             Key = node.Key;
             LeftNode = node.LeftNode;
             RightNode = node.RightNode;
+        }
+
+        public void PrintPretty(string indent, bool last) {
+
+            Console.Write(indent);
+            if (last) {
+                Console.Write("└─");
+                indent += "  ";
+            } else {
+                Console.Write("├─");
+                indent += "| ";
+            }
+            Console.WriteLine(Key);
+
+            var children = new List<Node>();
+            if (LeftNode != null)
+                children.Add(LeftNode);
+            if (RightNode != null)
+                children.Add(RightNode);
+
+            for (int i = 0; i < children.Count; i++)
+                children[i].PrintPretty(indent, i == children.Count - 1);
+
         }
     }
     class BinarySearchTree {
@@ -463,6 +556,16 @@ namespace AlgorithmsReview {
 
             /* now recur on right subtree */
             PrintPreOrder(node.RightNode);
+
+        }
+
+        public void PrintBst() {
+            if (_rootNode is null) {
+                Console.WriteLine("No BST Data.");
+                return;
+            }
+
+            _rootNode.PrintPretty("", true);
 
         }
     }

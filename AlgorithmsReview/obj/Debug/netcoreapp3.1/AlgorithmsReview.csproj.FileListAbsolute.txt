@@ -1,0 +1,11 @@
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\bin\Debug\netcoreapp3.1\AlgorithmsReview.exe
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\bin\Debug\netcoreapp3.1\AlgorithmsReview.deps.json
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\bin\Debug\netcoreapp3.1\AlgorithmsReview.runtimeconfig.json
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\bin\Debug\netcoreapp3.1\AlgorithmsReview.runtimeconfig.dev.json
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\bin\Debug\netcoreapp3.1\AlgorithmsReview.dll
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\bin\Debug\netcoreapp3.1\AlgorithmsReview.pdb
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\obj\Debug\netcoreapp3.1\AlgorithmsReview.csprojAssemblyReference.cache
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\obj\Debug\netcoreapp3.1\AlgorithmsReview.AssemblyInfoInputs.cache
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\obj\Debug\netcoreapp3.1\AlgorithmsReview.AssemblyInfo.cs
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\obj\Debug\netcoreapp3.1\AlgorithmsReview.dll
+C:\Users\TEKLABZ\source\repos\AlgorithmsReview\AlgorithmsReview\obj\Debug\netcoreapp3.1\AlgorithmsReview.pdb
