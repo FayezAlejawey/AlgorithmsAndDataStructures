@@ -5,6 +5,29 @@ namespace AlgorithmsReview {
     class Program {
         static void Main(string[] args) {
 
+            int[] targetArray = { 1, -10, 25, 19, 30, 35, 101, 100, 0 };
+            Console.WriteLine(string.Join(", ", targetArray));
+
+            Console.WriteLine(LinearSearch(targetArray, 1000));
+            Console.WriteLine(LinearSearch(targetArray, 25));
+
+            int[] mergedArray = MergeSort(targetArray);
+            Console.WriteLine(string.Join(", ", mergedArray));
+
+            Console.WriteLine(BinarySearch(mergedArray, 1000));
+            Console.WriteLine(BinarySearch(mergedArray, 35));
+
+            Console.WriteLine(string.Join(", ", targetArray));
+
+            BubbleSort(targetArray);
+            Console.WriteLine(string.Join(", ", targetArray));
+
+            targetArray = new[] { 1, -10, 25, 19, 30, 35, 101, 100, 0 };
+            Console.WriteLine(string.Join(", ", targetArray));
+
+            InsertionSort(targetArray);
+            Console.WriteLine(string.Join(", ", targetArray));
+
             var bst = new BinarySearchTree();
             bst.PrintBst();
 
@@ -46,11 +69,36 @@ namespace AlgorithmsReview {
             graph.AddEdge(8, 9);
             graph.AddEdge(9, 10);
 
-            Console.WriteLine(string.Join(", ", BreadthFirstSearch(graph, 1)));
-            Console.WriteLine(string.Join(", ", DepthFirstSearchUsingStack(graph, 1)));
+            Console.WriteLine(string.Join(", ", graph.BreadthFirstSearch(1)));
+            Console.WriteLine(string.Join(", ", graph.DepthFirstSearch(1)));
 
             DepthFirstSearchUsingRecursion(graph, 1);
             Console.WriteLine(string.Join(", ", _visited));
+
+            Console.WriteLine(graph.ShortestPath(0, 10));
+
+            /*You're given a two-dimensional array (a matrix) of potentially unequal height and width containing only 0s and 1s.
+             Each 0 represents land, and each 1 represents part of a river.
+             A river consists of any number of 1s that are either horizontally or vertically adjacent (but not diagonally adjacent).
+             The number of adjacent 1s forming a river determine its size.
+             Note that a river can twist.
+             In other words, it doesn't have to be a straight vertical line or a straight horizontal line;
+             it can be L-shaped, for example.
+             Write a function that returns an array fo the sizes of all rivers represented in the input matrix.
+             The sizes don't need to be in any particular order*/
+            int[,] matrix = {
+                {1, 0, 0, 1, 0},
+                {1, 0, 1, 0, 0},
+                {0, 0, 1, 0, 1},
+                {1, 0, 1, 0, 1},
+                {1, 0, 1, 1, 0}
+            };
+
+            var result = RiverSizes(matrix);
+            /*Expected Output
+             [1, 2, 2, 2, 5]
+             The numbers could be ordered differently.*/
+            Console.WriteLine(string.Join(", ", result.ToArray()));
 
         }
 
@@ -93,8 +141,14 @@ namespace AlgorithmsReview {
 
                 if (sortedArr[midIndex] > value) {
                     endIndex = midIndex - 1;
+                    if (endIndex < startIndex) {
+                        break;
+                    }
                 }else {
                     startIndex = midIndex + 1;
+                    if (startIndex > endIndex) {
+                        break;
+                    }
                 }
             }
 
@@ -238,76 +292,6 @@ namespace AlgorithmsReview {
 
         }
 
-        //O(V+E)
-        //O(V) Space Complexity
-        private static LinkedList<T> BreadthFirstSearch<T>(Graph<T> graph,T start) {
-
-            LinkedList<T> visited = new LinkedList<T>();
-
-            if (!graph.Adjecency.ContainsKey(start)) {
-                return visited;
-            }
-
-            Queue<T> queue = new Queue<T>();
-            queue.Enqueue(start);
-
-            while (queue.Count > 0) {
-
-                T vertex = queue.Dequeue();
-
-                if (visited.Contains(vertex)) {
-                    continue;
-                }
-
-                visited.AddLast(vertex);
-
-                foreach (T edge in graph.Adjecency[vertex]) {
-
-                    if (!visited.Contains(edge)) {
-                        queue.Enqueue(edge);
-                    }
-                }
-            }
-
-            return visited;
-
-        }
-
-        //O(V+E)
-        //O(V) Space Complexity
-        private static LinkedList<T> DepthFirstSearchUsingStack<T>(Graph<T> graph, T start) {
-
-            LinkedList<T> visited = new LinkedList<T>();
-
-            if (!graph.Adjecency.ContainsKey(start)) {
-                return visited;
-            }
-
-            Stack<T> stack = new Stack<T>();
-            stack.Push(start);
-
-            while (stack.Count > 0) {
-
-                T vertex = stack.Pop();
-
-                if (visited.Contains(vertex)) {
-                    continue;
-                }
-
-                visited.AddLast(vertex);
-
-                foreach (T edge in graph.Adjecency[vertex]) {
-
-                    if (!visited.Contains(edge)) {
-                        stack.Push(edge);
-                    }
-                }
-            }
-
-            return visited;
-
-        }
-
         private static LinkedList<object> _visited = new LinkedList<object>();
         public static void DepthFirstSearchUsingRecursion<T>(Graph<T> graph, T start) {
 
@@ -327,6 +311,99 @@ namespace AlgorithmsReview {
                 }
                 DepthFirstSearchUsingRecursion(graph, edge);
             }
+        }
+
+        private static List<int> RiverSizes(int[,] matrix) {
+
+            var riverSizes = new List<int>();
+
+            if (matrix is null) {
+                return riverSizes;
+            }
+
+            int rowsNumber = matrix.GetLength(0);
+            int columnsNumber = matrix.GetLength(1);
+
+            bool[,] visited = new bool[rowsNumber, columnsNumber];
+
+            for (int i = 0; i < rowsNumber; i++) {
+
+                for (int j = 0; j < columnsNumber; j++) {
+
+                    if (visited[i, j]) {
+                        continue;
+                    }
+
+                    var riverSize = TraverseMatrix(i, j, matrix, visited);
+                    if (riverSize > 0) {
+                        riverSizes.Add(riverSize);
+                    }
+                }
+            }
+
+            return riverSizes;
+
+        }
+
+        private static int TraverseMatrix(int i, int j, int[,] matrix, bool[,] visited) {
+
+            int riverSize = 0;
+
+            Stack<(int, int)> stack = new Stack<(int, int)>();
+            stack.Push((i, j));
+
+            while (stack.Count > 0) {
+
+                var vertex = stack.Pop();
+                if (visited[vertex.Item1, vertex.Item2]) {
+                    continue;
+                }
+
+                visited[vertex.Item1, vertex.Item2] = true;
+
+                if (matrix[vertex.Item1, vertex.Item2] == 0) {
+                    continue;
+                }
+
+                riverSize++;
+
+                var neighbors = GetVertexNeighbors(vertex.Item1, vertex.Item2, matrix);
+                foreach ((int, int) item in neighbors) {
+
+                    if (!visited[item.Item1, item.Item2]) {
+                        stack.Push((item.Item1, item.Item2));
+                    }
+                }
+            }
+
+            return riverSize;
+
+        }
+
+        private static List<(int, int)> GetVertexNeighbors(int i, int j, int[,] matrix) {
+
+            var neighbors = new List<(int, int)>();
+            var rowsNumber = matrix.GetLength(0);
+            var columnsNumber = matrix.GetLength(1);
+
+            if (i > 0) {
+                neighbors.Add((i - 1, j));
+            }
+
+            if (i < rowsNumber - 1) {
+                neighbors.Add((i + 1, j));
+            }
+
+            if (j > 0) {
+                neighbors.Add((i, j - 1));
+            }
+
+            if (j < columnsNumber - 1) {
+                neighbors.Add((i, j + 1));
+            }
+
+            return neighbors;
+
         }
     }
     class Node {
@@ -582,6 +659,109 @@ namespace AlgorithmsReview {
             if (Adjecency.ContainsKey(fromVertex) && Adjecency.ContainsKey(toVertex)) {
                 Adjecency[fromVertex].AddLast(toVertex);
             }
+        }
+
+        //O(V+E)
+        //O(V) Space Complexity
+        public LinkedList<T> BreadthFirstSearch(T start) {
+
+            var visited = new LinkedList<T>();
+            if (!Adjecency.ContainsKey(start)) {
+                return visited;
+            }
+
+            Queue<T> queue = new Queue<T>();
+            queue.Enqueue(start);
+
+            while (queue.Count > 0) {
+
+                T vertex = queue.Dequeue();
+                if (visited.Contains(vertex)) {
+                    continue;
+                }
+
+                visited.AddLast(vertex);
+
+                foreach (T item in Adjecency[vertex]) {
+
+                    if (!visited.Contains(item)) {
+                        queue.Enqueue(item);
+                    }
+                }
+            }
+
+            return visited;
+
+        }
+
+        //O(V+E)
+        //O(V) Space Complexity
+        public LinkedList<T> DepthFirstSearch(T start) {
+
+            var visited = new LinkedList<T>();
+            if (!Adjecency.ContainsKey(start)) {
+                return visited;
+            }
+
+            Stack<T> stack = new Stack<T>();
+            stack.Push(start);
+
+            while (stack.Count > 0) {
+
+                T vertex = stack.Pop();
+                if (visited.Contains(vertex)) {
+                    continue;
+                }
+
+                visited.AddLast(vertex);
+
+                foreach (T item in Adjecency[vertex]) {
+
+                    if (!visited.Contains(item)) {
+                        stack.Push(item);
+                    }
+                }
+            }
+
+            return visited;
+
+        }
+
+        public string ShortestPath(T startVertex, T endVertex) {
+
+            if (!Adjecency.ContainsKey(startVertex) || !Adjecency.ContainsKey(endVertex)) {
+                return string.Empty;
+            }
+
+            var visited = new List<T>();
+            Queue<(T, string)> queue = new Queue<(T, string)>();
+            queue.Enqueue((startVertex, startVertex.ToString()));
+
+            while (queue.Count > 0) {
+
+                var vertex = queue.Dequeue();
+                if (visited.Contains(vertex.Item1)) {
+                    continue;
+                }
+                visited.Add(vertex.Item1);
+
+                if (Equals(vertex.Item1, endVertex)) {
+                    return vertex.Item2;
+                }
+
+                foreach (T edge in Adjecency[vertex.Item1]) {
+
+                    if (visited.Contains(edge)) {
+                        continue;
+                    }
+
+                    queue.Enqueue((edge, vertex.Item2 + ", " + edge.ToString()));
+
+                }
+            }
+
+            return string.Empty;
+
         }
     }
 }
