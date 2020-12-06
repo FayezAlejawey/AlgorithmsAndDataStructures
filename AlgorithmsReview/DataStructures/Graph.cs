@@ -6,7 +6,13 @@ namespace AlgorithmsReview.DataStructures {
         public Dictionary<T, LinkedList<T>> Adjecency { get; } = new Dictionary<T, LinkedList<T>>();
 
         public void AddVertex(T vertex) {
+
+            if (Adjecency.ContainsKey(vertex)) {
+                return;
+            }
+
             Adjecency[vertex] = new LinkedList<T>();
+
         }
 
         public void AddEdge(T fromVertex, T toVertex) {
@@ -82,6 +88,7 @@ namespace AlgorithmsReview.DataStructures {
 
         }
 
+        //String Version
         public string ShortestPath(T startVertex, T endVertex) {
 
             if (!Adjecency.ContainsKey(startVertex) || !Adjecency.ContainsKey(endVertex)) {
@@ -116,6 +123,42 @@ namespace AlgorithmsReview.DataStructures {
             }
 
             return string.Empty;
+
+        }
+
+        //List Version
+        public List<T> ShortestPathListVersion(T startVertex, T endVertex) {
+
+            var visited = new List<T>();
+
+            if (!Adjecency.ContainsKey(startVertex) || !Adjecency.ContainsKey(endVertex)) {
+                return visited;
+            }
+
+            var queue = new Queue<(T, List<T>)>();
+            queue.Enqueue((startVertex, new List<T> { startVertex }));
+
+            while (queue.Count > 0) {
+
+                var vertex = queue.Dequeue();
+
+                if (Equals(vertex.Item1, endVertex)) {
+                    return vertex.Item2;
+                }
+
+                visited.Add(vertex.Item1);
+
+                foreach (T v in Adjecency[vertex.Item1]) {
+                    if (visited.Contains(v)) {
+                        continue;
+                    }
+
+                    var lst = new List<T>(vertex.Item2) { v };
+                    queue.Enqueue((v, lst));
+                }
+            }
+
+            return new List<T>();
 
         }
     }
