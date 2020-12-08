@@ -101,6 +101,10 @@ namespace AlgorithmsReview {
              The numbers could be ordered differently.*/
             Console.WriteLine(string.Join(", ", result.ToArray()));
 
+            var combinations = GetCombination(new List<int> {1, 2, 3});
+            foreach (var combination in combinations) {
+                Console.WriteLine(string.Join(", ", combination.ToArray()));
+            }
         }
 
         //O(n)
@@ -404,6 +408,29 @@ namespace AlgorithmsReview {
             }
 
             return neighbors;
+
+        }
+
+        private static List<List<int>> GetCombination(List<int> list) {
+
+            var lstOfLsts = new List<List<int>>();
+
+            double count = Math.Pow(2, list.Count);
+
+            for (int i = 1; i <= count - 1; i++) {
+
+                lstOfLsts.Add(new List<int>());
+
+                for (int j = 0; j < list.Count; j++) {
+
+                    int b = i & (1 << j);
+                    if (b > 0) {
+                        lstOfLsts[i - 1].Add(list[j]);
+                    }
+                }
+            }
+
+            return lstOfLsts;
 
         }
     }
