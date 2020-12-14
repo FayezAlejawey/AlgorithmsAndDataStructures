@@ -110,7 +110,7 @@ namespace AlgorithmsReview {
         //O(n)
         private static int LinearSearch(int[] arr, int value) {
 
-            if (arr == null || arr.Length < 1) {
+            if (arr == null) {
                 return -1;
             }
 
@@ -129,7 +129,7 @@ namespace AlgorithmsReview {
         //O(log(n))
         private static int BinarySearch(int[] sortedArr, int value) {
 
-            if (sortedArr == null || sortedArr.Length < 1) {
+            if (sortedArr == null) {
                 return -1;
             }
 
@@ -165,7 +165,7 @@ namespace AlgorithmsReview {
         //O(log(log(n)))
         private static int InterpolationSearch(int[] sortedArr, int value) {
 
-            if (sortedArr == null || sortedArr.Length < 1) {
+            if (sortedArr == null) {
                 return -1;
             }
 
@@ -183,8 +183,14 @@ namespace AlgorithmsReview {
 
                 if (sortedArr[midIndex] > value) {
                     endIndex = midIndex - 1;
+                    if (endIndex < startIndex) {
+                        break;
+                    }
                 } else {
                     startIndex = midIndex + 1;
+                    if (startIndex > endIndex) {
+                        break;
+                    }
                 }
             }
 
